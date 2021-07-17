@@ -1,0 +1,9 @@
+# ctags and cscope
+tags
+cscope.out
+
+# build directory
+build/
+
+# executable
+shittypong
