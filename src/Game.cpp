@@ -155,19 +155,15 @@ void Game::tick()
 void Game::checkCollision()
 {
     // Check top and bottom edges for bounces:
-    if (ball.getVPosition() + ball.getRadius() >= 1 ||
-        ball.getVPosition() - ball.getRadius() <= -1)
-    {
-        ball.vReverse();
-    }
+    ball.bounceVertically();
 
     // Check left and right edges for scores:
-    if (ball.getHPosition() - ball.getRadius() <= -1)
+    if (ball.isLeftOf(-1))
     {
         m_rightScore++;
         reset();
     }
-    else if (ball.getHPosition() + ball.getRadius() >= 1)
+    else if (ball.isRightOf(1))
     {
         m_leftScore++;
         reset();
@@ -178,7 +174,7 @@ void Game::checkCollision()
     Coords rightPaddleCoords = rightPaddle.getCoords();
 
     // Has the ball reached the rightmost point of the left paddle?
-    if ((ball.getHPosition() - ball.getRadius()) <= leftPaddleCoords.x2)
+    if (ball.isLeftOf(leftPaddleCoords.x2))
     {
         // three collision modes possible: top corner, flat mid, bot corner.
         
@@ -190,21 +186,15 @@ void Game::checkCollision()
         }
 
         // If we're on the top or bottom corner, the check gets more fun:
-        else if (
-            (pow(leftPaddleCoords.x2 - ball.getHPosition(), 2) +
-            pow(leftPaddleCoords.y1 - ball.getVPosition(), 2) <=
-            pow(ball.getRadius(), 2)) 
-            ||            
-            (pow(leftPaddleCoords.x2 - ball.getHPosition(), 2) +
-            pow(leftPaddleCoords.y2 - ball.getVPosition(), 2) <=
-            pow(ball.getRadius(), 2)))
+        else if (ball.collidesWith(leftPaddleCoords.x2, leftPaddleCoords.y1)
+            ||   ball.collidesWith(leftPaddleCoords.x2, leftPaddleCoords.y2))
         {
             // Todo: find the angle and rebound accordingly
             // for now just reverse it:
             ball.hReverse();
         }
     }
-    else if ((ball.getHPosition() + ball.getRadius()) >= rightPaddleCoords.x1)
+    else if (ball.isRightOf(rightPaddleCoords.x1))
     {
         // three collision modes possible: top corner, flat mid, bot corner.
         
@@ -217,14 +207,8 @@ void Game::checkCollision()
 
         // If we're on the top or bottom corner, the check gets more fun:
         // top:
-        else if (
-            (pow(rightPaddleCoords.x1 - ball.getHPosition(), 2) +
-            pow(rightPaddleCoords.y1 - ball.getVPosition(), 2) <=
-            pow(ball.getRadius(), 2)) 
-            ||            
-            (pow(rightPaddleCoords.x1 - ball.getHPosition(), 2) +
-            pow(rightPaddleCoords.y2 - ball.getVPosition(), 2) <=
-            pow(ball.getRadius(), 2)))
+        else if (ball.collidesWith(rightPaddleCoords.x1, rightPaddleCoords.y1)
+            ||   ball.collidesWith(rightPaddleCoords.x1, rightPaddleCoords.y2))
         {
             // Todo: find the angle and rebound accordingly
             // for now just reverse it:

@@ -1,3 +1,4 @@
+#include <math.h>
 #include "Ball.h"
 
 const float defaultVVelocity = 0.002;
@@ -22,5 +23,28 @@ void Ball::reset()
     m_hvelocity = defaultHVelocity;
     m_vvelocity = defaultVVelocity;
     m_radius = defaultRadius;
+}
+
+bool Ball::collidesWith(float x, float y)
+{
+    return pow(x - m_hposition, 2) + pow(y - m_vposition, 2) <= pow(m_radius, 2);
+}
+
+bool Ball::isLeftOf(float x)
+{
+    return m_hposition - m_radius <= x;
+}
+
+bool Ball::isRightOf(float x)
+{
+    return m_hposition + m_radius >= x;
+}
+
+void Ball::bounceVertically()
+{
+    if (m_vposition + m_radius >= 1 || m_vposition - m_radius <= -1)
+    {
+        m_vvelocity = -m_vvelocity;
+    }
 }
 

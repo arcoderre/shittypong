@@ -16,8 +16,13 @@ class Ball
         void tick();
         void reset();
 
+        bool collidesWith(float x_coord, float y_coord);
+        bool isLeftOf(float x_coord);
+        bool isRightOf(float x_coord);
+
+        void bounceVertically();
+
         void hReverse() { m_hvelocity = -m_hvelocity; }
-        void vReverse() { m_vvelocity = -m_vvelocity; }
 
         float getRadius() { return m_radius; }
         float getHPosition() { return m_hposition; }
