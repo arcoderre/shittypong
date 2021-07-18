@@ -28,9 +28,11 @@ steady_clock::time_point last_tick;
 
 void error_callback(int error, const char* description)
 {
-    fprintf(stderr, "error: %s\n", description);
+    fprintf(stderr, "error %i: %s\n", error, description);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 void handleInput(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action == GLFW_PRESS)
@@ -63,6 +65,7 @@ void handleInput(GLFWwindow* window, int key, int scancode, int action, int mods
         }
     }
 }
+#pragma GCC diagnostic pop
 
 int setupGameWindow()
 {
