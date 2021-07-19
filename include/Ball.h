@@ -1,6 +1,8 @@
 #ifndef BALL_H
 #define BALL_H
 
+#include "Coords.h"
+
 class Ball 
 {
     private:
@@ -10,19 +12,19 @@ class Ball
         float m_hvelocity;
         float m_vvelocity;
 
+        bool collidesWith(float x_coord, float y_coord);
+        void bounceOnPoint(float x_coord, float y_coord);
+        void bounceVertically();
+
     public:
         Ball();
 
         void tick();
         void reset();
 
-        bool collidesWith(float x_coord, float y_coord);
-        bool isLeftOf(float x_coord);
-        bool isRightOf(float x_coord);
+        bool touches(float x_coord);
 
-        void bounceVertically();
-
-        void hReverse() { m_hvelocity = -m_hvelocity; }
+        void collideWithPaddle(Coords paddleCoords);
 
         float getRadius() { return m_radius; }
         float getHPosition() { return m_hposition; }

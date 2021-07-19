@@ -154,68 +154,22 @@ void Game::tick()
 
 void Game::checkCollision()
 {
-    // Check top and bottom edges for bounces:
-    ball.bounceVertically();
-
     // Check left and right edges for scores:
-    if (ball.isLeftOf(-1))
+    if (ball.touches(-1))
     {
         m_rightScore++;
         reset();
     }
-    else if (ball.isRightOf(1))
+    else if (ball.touches(1))
     {
         m_leftScore++;
         reset();
     }
 
     // Check horizontal collisions with the paddles:
-    Coords leftPaddleCoords = leftPaddle.getCoords();
-    Coords rightPaddleCoords = rightPaddle.getCoords();
-
-    // Has the ball reached the rightmost point of the left paddle?
-    if (ball.isLeftOf(leftPaddleCoords.x2))
-    {
-        // three collision modes possible: top corner, flat mid, bot corner.
-        
-        // If the ball hits on the flat part of the paddle, reverse the ball's direction
-        if (ball.getVPosition() < leftPaddleCoords.y1 &&
-            ball.getVPosition() > leftPaddleCoords.y2)
-        {
-            ball.hReverse();
-        }
-
-        // If we're on the top or bottom corner, the check gets more fun:
-        else if (ball.collidesWith(leftPaddleCoords.x2, leftPaddleCoords.y1)
-            ||   ball.collidesWith(leftPaddleCoords.x2, leftPaddleCoords.y2))
-        {
-            // Todo: find the angle and rebound accordingly
-            // for now just reverse it:
-            ball.hReverse();
-        }
-    }
-    else if (ball.isRightOf(rightPaddleCoords.x1))
-    {
-        // three collision modes possible: top corner, flat mid, bot corner.
-        
-        // If the ball hits on the flat part of the paddle, reverse the ball's direction
-        if (ball.getVPosition() < rightPaddleCoords.y1 &&
-            ball.getVPosition() > rightPaddleCoords.y2)
-        {
-            ball.hReverse();
-        }
-
-        // If we're on the top or bottom corner, the check gets more fun:
-        // top:
-        else if (ball.collidesWith(rightPaddleCoords.x1, rightPaddleCoords.y1)
-            ||   ball.collidesWith(rightPaddleCoords.x1, rightPaddleCoords.y2))
-        {
-            // Todo: find the angle and rebound accordingly
-            // for now just reverse it:
-            ball.hReverse();
-        }
-    }
-}
+    ball.collideWithPaddle(leftPaddle.getCoords());
+    ball.collideWithPaddle(rightPaddle.getCoords());
+ }
 
 void Game::render()
 {
