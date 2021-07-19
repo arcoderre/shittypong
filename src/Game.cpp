@@ -133,6 +133,8 @@ void Game::reset()
     ball.reset();
     
     is_running = false;
+
+    fprintf(stdout, "Score is: %i to %i\n", m_leftScore, m_rightScore);
 }
 
 void Game::tick()
