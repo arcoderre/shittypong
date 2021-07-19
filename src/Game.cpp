@@ -195,15 +195,15 @@ void Game::render()
     glVertex2f(rightPaddleCoords.x1, rightPaddleCoords.y2);
     glEnd();
 
-
+    Ball::Coords ballCoords = ball.getCoords();
     int triangles = 20;
-    
+
     glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(ball.getHPosition(), ball.getVPosition()); // center of circle
+    glVertex2f(ballCoords.x, ballCoords.y); // center of circle
     for(int i = 0; i <= triangles; i++) { 
         glVertex2f(
-            ball.getHPosition() + (ball.getRadius() * cos(i *  twicePi / triangles)), 
-            ball.getVPosition() + (ball.getRadius() * sin(i * twicePi / triangles))
+            ballCoords.x + (ballCoords.r * cos(i *  twicePi / triangles)),
+            ballCoords.y + (ballCoords.r * sin(i * twicePi / triangles))
         );
     }
     glEnd();

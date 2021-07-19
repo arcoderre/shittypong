@@ -99,3 +99,12 @@ void Ball::bounceVertically()
     }
 }
 
+Ball::Coords Ball::getCoords()
+{
+    return Ball::Coords {
+        m_hposition,
+        m_vposition,
+        m_radius
+    };
+}
+

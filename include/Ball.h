@@ -27,9 +27,12 @@ class Ball
 
         void collideWithPaddle(Paddle paddle);
 
-        float getRadius() { return m_radius; }
-        float getHPosition() { return m_hposition; }
-        float getVPosition() { return m_vposition; }
+        struct Coords
+        {
+            float x, y, r;
+        };
+
+        Ball::Coords getCoords();
 };
 
 #endif
