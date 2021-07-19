@@ -51,9 +51,9 @@ void Paddle::down()
         m_velocity -= velocity_increment;
 }
 
-Coords Paddle::getCoords()
+Paddle::Coords Paddle::getCoords()
 {
-    return Coords { 
+    return Paddle::Coords {
         (m_hposition - m_width / 2), // top left
         (m_vposition + m_length / 2),
         (m_hposition + m_width / 2),

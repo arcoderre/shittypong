@@ -175,7 +175,7 @@ void Game::render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    Coords leftPaddleCoords = leftPaddle.getCoords();
+    Paddle::Coords leftPaddleCoords = leftPaddle.getCoords();
 
     glBegin(GL_POLYGON);
     glVertex2f(leftPaddleCoords.x1, leftPaddleCoords.y1);
@@ -184,7 +184,7 @@ void Game::render()
     glVertex2f(leftPaddleCoords.x1, leftPaddleCoords.y2);
     glEnd();
 
-    Coords rightPaddleCoords = rightPaddle.getCoords();
+    Paddle::Coords rightPaddleCoords = rightPaddle.getCoords();
     
     glBegin(GL_POLYGON);
     glVertex2f(rightPaddleCoords.x1, rightPaddleCoords.y1);

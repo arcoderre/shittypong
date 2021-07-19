@@ -25,7 +25,12 @@ class Paddle {
         void up();
         void down();
 
-        Coords getCoords();
+        struct Coords {
+            float x1, y1, x2, y2;
+        };
+
+        Paddle::Coords getCoords();
+
 };
 
 #endif

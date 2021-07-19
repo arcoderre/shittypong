@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "Ball.h"
+#include "Paddle.h"
 
 const float defaultVVelocity = 0.002;
 const float defaultHVelocity = 0.015;
@@ -28,7 +29,7 @@ void Ball::reset()
     m_radius = defaultRadius;
 }
 
-void Ball::collideWithPaddle(Coords paddleCoords)
+void Ball::collideWithPaddle(Paddle::Coords paddleCoords)
 {
 
     float x = m_hvelocity > 0 ? paddleCoords.x1 : paddleCoords.x2;

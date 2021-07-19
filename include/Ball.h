@@ -1,7 +1,7 @@
 #ifndef BALL_H
 #define BALL_H
 
-#include "Coords.h"
+#include "Paddle.h"
 
 class Ball 
 {
@@ -24,7 +24,7 @@ class Ball
 
         bool touches(float x_coord);
 
-        void collideWithPaddle(Coords paddleCoords);
+        void collideWithPaddle(Paddle::Coords paddleCoords);
 
         float getRadius() { return m_radius; }
         float getHPosition() { return m_hposition; }
