@@ -74,7 +74,7 @@ int setupGameWindow()
     if (!glfwInit())
         return -1;
 
-    window = glfwCreateWindow(640, 480, "Pong, but shitty", NULL, NULL);
+    window = glfwCreateWindow(640, 640, "Pong, but shitty", NULL, NULL);
 
     if (!window)
     { 
