@@ -7,7 +7,7 @@ CFLAGS=-Wall -I$(IDIR)
 
 LDLIBS=-lglfw -lGL
 
-_DEPS = Game.h Ball.h Paddle.h Coords.h
+_DEPS = Game.h Ball.h Paddle.h
 DEPS = $(patsubst %, $(IDIR)/%,$(_DEPS))
 
 _OBJ = Game.o Ball.o Paddle.o

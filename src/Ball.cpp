@@ -7,6 +7,8 @@ const float defaultVVelocity = 0.002;
 const float defaultHVelocity = 0.015;
 const float defaultRadius = 0.05;
 
+const float paddleAccelerationFactor = 0.3;
+
 Ball::Ball()
 {
     reset();
@@ -29,12 +31,16 @@ void Ball::reset()
     m_radius = defaultRadius;
 }
 
-void Ball::collideWithPaddle(Paddle::Coords paddleCoords)
+void Ball::collideWithPaddle(Paddle paddle)
 {
-
+    Paddle::Coords paddleCoords = paddle.getCoords();
     float x = m_hvelocity > 0 ? paddleCoords.x1 : paddleCoords.x2;
     float y_top = paddleCoords.y1;
     float y_bot = paddleCoords.y2;
+
+    // miss: do nothing, avoid calculations below
+    if (y_top < m_vposition - m_radius || y_bot > m_vposition + m_radius)
+        return;
 
     // Can only collide if the x-position is within the ball's range
     if (x >= m_hposition - m_radius && x <= m_hposition + m_radius)
@@ -43,20 +49,24 @@ void Ball::collideWithPaddle(Paddle::Coords paddleCoords)
         if (m_vposition <= y_top && m_vposition >=y_bot)
         {
             m_hvelocity = -m_hvelocity;
-        }
-        // miss: do nothing, but avoid calculations below
-        else if (y_top < m_vposition - m_radius || y_bot > m_vposition + m_radius)
-        {
+            addPaddleVelocity(paddle.getVelocity());
         }
         else if (collidesWith(x, y_top))
         {
             bounceOnPoint(x, y_top);
+            addPaddleVelocity(paddle.getVelocity());
         }
         else if (collidesWith(x, y_bot))
         {
             bounceOnPoint(x, y_bot);
+            addPaddleVelocity(paddle.getVelocity());
         }
     }
+}
+
+void Ball::addPaddleVelocity(float paddleVelocity)
+{
+    m_vvelocity += paddleAccelerationFactor * paddleVelocity;
 }
 
 bool Ball::collidesWith(float x, float y)

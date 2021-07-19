@@ -15,6 +15,7 @@ class Ball
         bool collidesWith(float x_coord, float y_coord);
         void bounceOnPoint(float x_coord, float y_coord);
         void bounceVertically();
+        void addPaddleVelocity(float paddleVelocity);
 
     public:
         Ball();
@@ -24,7 +25,7 @@ class Ball
 
         bool touches(float x_coord);
 
-        void collideWithPaddle(Paddle::Coords paddleCoords);
+        void collideWithPaddle(Paddle paddle);
 
         float getRadius() { return m_radius; }
         float getHPosition() { return m_hposition; }

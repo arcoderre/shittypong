@@ -1,8 +1,6 @@
 #ifndef PADDLE_H
 #define PADDLE_H
 
-#include "Coords.h"
-
 class Paddle {
     private:
         float m_length;
@@ -16,6 +14,8 @@ class Paddle {
         
         void setLeftPaddle();
         void setRightPaddle();
+
+        float getVelocity() { return m_velocity; }
 
         void tick();
 

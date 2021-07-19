@@ -167,8 +167,8 @@ void Game::checkCollision()
     }
 
     // Check horizontal collisions with the paddles:
-    ball.collideWithPaddle(leftPaddle.getCoords());
-    ball.collideWithPaddle(rightPaddle.getCoords());
+    ball.collideWithPaddle(leftPaddle);
+    ball.collideWithPaddle(rightPaddle);
  }
 
 void Game::render()
