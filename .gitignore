@@ -1,6 +1,7 @@
 # ctags and cscope
 tags
 cscope.out
+compile_commands.json
 
 # build directory
 build/
