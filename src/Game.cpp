@@ -16,8 +16,14 @@
 const int defaultMillisPerTick = 10;
 const float twoPi = 3.14159*2;
 
+
 GLFWwindow* window;
 GLuint buffer;
+
+// 2-element vertices, 3 vertices per triangle; two triangles on each paddle, then 20 triangles for the ball
+const int triangles = 20;
+const int buffer_size = 2 * 3 * (2 * 2 + triangles);
+GLfloat buffer_data[buffer_size];
 
 Paddle leftPaddle;
 Paddle rightPaddle;
@@ -174,6 +180,8 @@ int setupGameWindow()
     glUseProgram(programID);
 
     glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, buffer_size * sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
     return 1;
 }
@@ -269,10 +277,6 @@ void Game::checkCollision()
 
 void Game::render()
 {
-    // 2-element vertices, 3 vertices per triangle; two triangles on each paddle, then 20 triangles for the ball
-    const int triangles = 20;
-    GLfloat buffer_data[2 * 3 * (2 * 2 + triangles)];
-
     Paddle::Coords leftPaddleCoords = leftPaddle.getCoords();
     Paddle::Coords rightPaddleCoords = rightPaddle.getCoords();
     Ball::Coords ballCoords = ball.getCoords();
@@ -345,7 +349,7 @@ void Game::render()
     glClear(GL_COLOR_BUFFER_BIT);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STREAM_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size * sizeof(float), &buffer_data);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
