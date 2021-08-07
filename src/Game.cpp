@@ -18,12 +18,18 @@ const float twoPi = 3.14159*2;
 
 
 GLFWwindow* window;
-GLuint buffer;
+GLuint vbo, ibo; // Vertex and index buffers
 
-// 2-element vertices, 3 vertices per triangle; two triangles on each paddle, then 20 triangles for the ball
+// 2-element vertices, 4 per paddle, 1 + $triangles for the ball (centre + ring)
 const int triangles = 20;
-const int buffer_size = 2 * 3 * (2 * 2 + triangles);
-GLfloat buffer_data[buffer_size];
+const int vertex_count = 2 * (4 * 2 + 1 + triangles);
+GLfloat vertices[vertex_count];
+
+// 3 indices per triangle; two triangles on each paddle, then 20 triangles for the ball
+// Paddle indices start top left and go clockwise
+// Ball indices start with the centre, then positive x and go counterclockwise (i.e. math standard)
+const int index_count = 3 * (2 * 2 + triangles);
+GLuint indices[index_count];
 
 Paddle leftPaddle;
 Paddle rightPaddle;
@@ -34,6 +40,38 @@ bool is_running = false;
 
 std::chrono::steady_clock::time_point last_tick;
 
+
+void initIndices()
+{
+    int i = 0;
+    // Left paddle:
+    indices[i++] = 0;
+    indices[i++] = 1;
+    indices[i++] = 3;
+
+    indices[i++] = 1;
+    indices[i++] = 2;
+    indices[i++] = 3;
+
+    // Right paddle:
+    indices[i++] = 4;
+    indices[i++] = 5;
+    indices[i++] = 7;
+
+    indices[i++] = 5;
+    indices[i++] = 6;
+    indices[i++] = 7;
+
+    // Ball:
+    for (int j = 0; j < triangles; j++)
+    {
+        indices[i++] = 8;
+        indices[i++] = 8 + j;
+        indices[i++] = 8 + j + 1;
+    }
+    // the final triangle index should be the first vertex on the circle of the ball
+    indices[index_count - 1] = 9;
+}
 
 void error_callback(int error, const char* description)
 {
@@ -179,9 +217,13 @@ int setupGameWindow()
     GLuint programID = loadShaders();
     glUseProgram(programID);
 
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, buffer_size * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
     return 1;
 }
@@ -199,6 +241,8 @@ Game::Game()
     m_allGood = true;
 
     is_running = false;
+
+    initIndices();
 }
 
 Game::~Game()
@@ -284,79 +328,60 @@ void Game::render()
     int i = 0;
     // Left paddle:
     // Top left
-    buffer_data[i++] = leftPaddleCoords.x1;
-    buffer_data[i++] = leftPaddleCoords.y1;
+    vertices[i++] = leftPaddleCoords.x1;
+    vertices[i++] = leftPaddleCoords.y1;
 
     // Top right
-    buffer_data[i++] = leftPaddleCoords.x2;
-    buffer_data[i++] = leftPaddleCoords.y1;
+    vertices[i++] = leftPaddleCoords.x2;
+    vertices[i++] = leftPaddleCoords.y1;
+
+    // Bottom right
+    vertices[i++] = leftPaddleCoords.x2;
+    vertices[i++] = leftPaddleCoords.y2;
 
     // Bottom left
-    buffer_data[i++] = leftPaddleCoords.x1;
-    buffer_data[i++] = leftPaddleCoords.y2;
-
-    // Left paddle, second triangle:
-    // Bottom left
-    buffer_data[i++] = leftPaddleCoords.x1;
-    buffer_data[i++] = leftPaddleCoords.y2;
-
-    // Bottom right:
-    buffer_data[i++] = leftPaddleCoords.x2;
-    buffer_data[i++] = leftPaddleCoords.y2;
-
-    // Top right
-    buffer_data[i++] = leftPaddleCoords.x2;
-    buffer_data[i++] = leftPaddleCoords.y1;
+    vertices[i++] = leftPaddleCoords.x1;
+    vertices[i++] = leftPaddleCoords.y2;
 
     // Right paddle:
     // Top left
-    buffer_data[i++] = rightPaddleCoords.x1;
-    buffer_data[i++] = rightPaddleCoords.y1;
+    vertices[i++] = rightPaddleCoords.x1;
+    vertices[i++] = rightPaddleCoords.y1;
 
     // Top right
-    buffer_data[i++] = rightPaddleCoords.x2;
-    buffer_data[i++] = rightPaddleCoords.y1;
+    vertices[i++] = rightPaddleCoords.x2;
+    vertices[i++] = rightPaddleCoords.y1;
 
     // Bottom right
-    buffer_data[i++] = rightPaddleCoords.x1;
-    buffer_data[i++] = rightPaddleCoords.y2;
+    vertices[i++] = rightPaddleCoords.x2;
+    vertices[i++] = rightPaddleCoords.y2;
 
-    // Right paddle, second triangle:
-    // Bottom right
-    buffer_data[i++] = rightPaddleCoords.x1;
-    buffer_data[i++] = rightPaddleCoords.y2;
+    // Bottom left
+    vertices[i++] = rightPaddleCoords.x1;
+    vertices[i++] = rightPaddleCoords.y2;
 
-    // Bottom right:
-    buffer_data[i++] = rightPaddleCoords.x2;
-    buffer_data[i++] = rightPaddleCoords.y2;
-    
-    // Top right
-    buffer_data[i++] = rightPaddleCoords.x2;
-    buffer_data[i++] = rightPaddleCoords.y1;
+    vertices[i++] = ballCoords.x;
+    vertices[i++] = ballCoords.y;
 
     for (int j = 0; j < triangles; j++)
     {
-        buffer_data[i++] = ballCoords.x;
-        buffer_data[i++] = ballCoords.y;
-
-        buffer_data[i++] = ballCoords.x + (ballCoords.r * cos(j * twoPi / triangles));
-        buffer_data[i++] = ballCoords.y + (ballCoords.r * sin(j * twoPi / triangles));
-
-        buffer_data[i++] = ballCoords.x + (ballCoords.r * cos((j+1) * twoPi / triangles));
-        buffer_data[i++] = ballCoords.y + (ballCoords.r * sin((j+1) * twoPi / triangles));
+        vertices[i++] = ballCoords.x + (ballCoords.r * cos(j * twoPi / triangles));
+        vertices[i++] = ballCoords.y + (ballCoords.r * sin(j * twoPi / triangles));
     }
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertex_count * sizeof(float), &vertices);
 
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, buffer_size * sizeof(float), &buffer_data);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3 * (4 + triangles));
+    glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
