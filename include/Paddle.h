@@ -27,6 +27,8 @@ class Paddle {
         };
 
         Paddle::Coords getCoords();
+
+        void assignIndices(int * index, unsigned int * indexArray, unsigned int offset);
 };
 #endif
 

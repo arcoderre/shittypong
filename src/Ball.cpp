@@ -1,5 +1,4 @@
 #include <math.h>
-#include <stdio.h>
 #include "Ball.h"
 #include "Paddle.h"
 
@@ -106,5 +105,17 @@ Ball::Coords Ball::getCoords()
         m_vposition,
         m_radius
     };
+}
+
+void Ball::assignIndices(int * index, unsigned int * indexArray, unsigned int vertexOffset, int triangleCount)
+{
+    for (int j = 0; j < triangleCount; j++)
+    {
+        indexArray[(*index)++] = vertexOffset;
+        indexArray[(*index)++] = vertexOffset + j;
+        indexArray[(*index)++] = vertexOffset + j + 1;
+    }
+    // the final triangle index should be the first vertex on the circle of the ball
+    indexArray[(*index) - 1] = vertexOffset + 1;
 }
 

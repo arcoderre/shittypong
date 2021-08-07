@@ -44,33 +44,9 @@ std::chrono::steady_clock::time_point last_tick;
 void initIndices()
 {
     int i = 0;
-    // Left paddle:
-    indices[i++] = 0;
-    indices[i++] = 1;
-    indices[i++] = 3;
-
-    indices[i++] = 1;
-    indices[i++] = 2;
-    indices[i++] = 3;
-
-    // Right paddle:
-    indices[i++] = 4;
-    indices[i++] = 5;
-    indices[i++] = 7;
-
-    indices[i++] = 5;
-    indices[i++] = 6;
-    indices[i++] = 7;
-
-    // Ball:
-    for (int j = 0; j < triangles; j++)
-    {
-        indices[i++] = 8;
-        indices[i++] = 8 + j;
-        indices[i++] = 8 + j + 1;
-    }
-    // the final triangle index should be the first vertex on the circle of the ball
-    indices[index_count - 1] = 9;
+    leftPaddle.assignIndices(&i, indices, 0);
+    rightPaddle.assignIndices(&i, indices, 4);
+    ball.assignIndices(&i, indices, 8, triangles);
 }
 
 void error_callback(int error, const char* description)

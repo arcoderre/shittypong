@@ -33,6 +33,8 @@ class Ball
         };
 
         Ball::Coords getCoords();
+
+        void assignIndices(int * index, unsigned int * indexArray, unsigned int vertexOffset, int triangleCount);
 };
 
 #endif

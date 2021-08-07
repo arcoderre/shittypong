@@ -54,3 +54,15 @@ Paddle::Coords Paddle::getCoords()
     };
 }
 
+void Paddle::assignIndices(int * index, unsigned int * indexArray, unsigned int vertexOffset)
+{
+    // Top left triangle:
+    indexArray[(*index)++] = vertexOffset;
+    indexArray[(*index)++] = vertexOffset + 1;
+    indexArray[(*index)++] = vertexOffset + 3;
+    // Bottom right triangle:
+    indexArray[(*index)++] = vertexOffset + 1;
+    indexArray[(*index)++] = vertexOffset + 2;
+    indexArray[(*index)++] = vertexOffset + 3;
+}
+
