@@ -3,17 +3,14 @@
 
 class Paddle {
     private:
-        float m_length;
-        float m_width;
-        float m_hposition;        // will differ between left and right paddle
-        float m_vposition;
-        float m_velocity; 
+        const float m_x1, m_x2; // x-positions are constant
+        float m_y1, m_y2;       // y-positions are variable
+        float m_velocity;       // distance moved per tick in the y-direction
 
     public:
-        Paddle();
-        
-        void setLeftPaddle();
-        void setRightPaddle();
+        enum Position { LEFT = -1, RIGHT = 1 };
+
+        Paddle(Position);
 
         float getVelocity() { return m_velocity; }
 
@@ -30,8 +27,6 @@ class Paddle {
         };
 
         Paddle::Coords getCoords();
-
 };
-
 #endif
 

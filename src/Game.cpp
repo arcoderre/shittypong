@@ -31,8 +31,8 @@ GLfloat vertices[vertex_count];
 const int index_count = 3 * (2 * 2 + triangles);
 GLuint indices[index_count];
 
-Paddle leftPaddle;
-Paddle rightPaddle;
+Paddle leftPaddle(Paddle::Position::LEFT);
+Paddle rightPaddle(Paddle::Position::RIGHT);
 Ball ball;
 
 // Start the game in a "ready" state
@@ -230,10 +230,6 @@ int setupGameWindow()
 
 Game::Game()
 {
-    leftPaddle.setLeftPaddle();
-
-    rightPaddle.setRightPaddle();
-
     m_millisPerTick = defaultMillisPerTick;
 
     m_leftScore = 0;

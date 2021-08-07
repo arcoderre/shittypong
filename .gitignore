@@ -2,6 +2,7 @@
 tags
 cscope.out
 compile_commands.json
+.vimspector.json
 
 # build directory
 build/
