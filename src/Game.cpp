@@ -7,11 +7,33 @@
 #include <chrono>
 #include <string>
 #include <vector>
+#include <signal.h>
 
 #include "Game.h"
 
 #include "Paddle.h"
 #include "Ball.h"
+
+#define ASSERT(x) if (!(x)) raise(SIGTRAP);
+#define GLCall(x) GLClearError();\
+    x;\
+    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+static void GLClearError()
+{
+    while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char* function, const char* file, int line)
+{
+    bool is_ok = true;
+    while (GLenum error = glGetError())
+    {
+        fprintf(stderr, "[OpenGL Error] (%i): %s :: %s : %i", error, function, file, line);
+        is_ok = false;
+    }
+    return is_ok;
+}
 
 const int defaultMillisPerTick = 10;
 
@@ -190,15 +212,15 @@ int setupGameWindow()
     glfwSwapInterval(1); // Draw every frame
 
     GLuint programID = loadShaders();
-    glUseProgram(programID);
+    GLCall(glUseProgram(programID));
 
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+    GLCall(glGenBuffers(1, &vbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(float), NULL, GL_DYNAMIC_DRAW));
 
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    GLCall(glGenBuffers(1, &ibo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
     return 1;
 }
@@ -297,19 +319,19 @@ void Game::render()
     rightPaddle.assignVertices(&i, vertices);
     ball.assignVertices(&i, vertices);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertex_count * sizeof(float), &vertices);
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, vertex_count * sizeof(float), &vertices));
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
 
-    glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
+    GLCall(glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr));
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
