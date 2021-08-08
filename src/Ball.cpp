@@ -101,15 +101,6 @@ void Ball::bounceVertically()
     }
 }
 
-Ball::Coords Ball::getCoords()
-{
-    return Ball::Coords {
-        m_x,
-        m_y,
-        m_r
-    };
-}
-
 void Ball::assignIndices(int * index, unsigned int * indexArray, unsigned int vertexOffset)
 {
     for (int j = 0; j < m_triangleCount; j++)

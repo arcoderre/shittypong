@@ -29,13 +29,6 @@ class Ball
 
         void collideWithPaddle(Paddle paddle);
 
-        struct Coords
-        {
-            float x, y, r;
-        };
-
-        Ball::Coords getCoords();
-
         void assignIndices(int * index, unsigned int * indexArray, unsigned int vertexOffset);
 
         void assignVertices(int * index, float * vertexArray);
