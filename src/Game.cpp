@@ -14,7 +14,6 @@
 #include "Ball.h"
 
 const int defaultMillisPerTick = 10;
-const float twoPi = 3.14159*2;
 
 
 GLFWwindow* window;
@@ -33,7 +32,7 @@ GLuint indices[index_count];
 
 Paddle leftPaddle(Paddle::Position::LEFT);
 Paddle rightPaddle(Paddle::Position::RIGHT);
-Ball ball;
+Ball ball(triangles);
 
 // Start the game in a "ready" state
 bool is_running = false;
@@ -46,7 +45,7 @@ void initIndices()
     int i = 0;
     leftPaddle.assignIndices(&i, indices, 0);
     rightPaddle.assignIndices(&i, indices, 4);
-    ball.assignIndices(&i, indices, 8, triangles);
+    ball.assignIndices(&i, indices, 8);
 }
 
 void error_callback(int error, const char* description)
@@ -293,53 +292,10 @@ void Game::checkCollision()
 
 void Game::render()
 {
-    Paddle::Coords leftPaddleCoords = leftPaddle.getCoords();
-    Paddle::Coords rightPaddleCoords = rightPaddle.getCoords();
-    Ball::Coords ballCoords = ball.getCoords();
-
     int i = 0;
-    // Left paddle:
-    // Top left
-    vertices[i++] = leftPaddleCoords.x1;
-    vertices[i++] = leftPaddleCoords.y1;
-
-    // Top right
-    vertices[i++] = leftPaddleCoords.x2;
-    vertices[i++] = leftPaddleCoords.y1;
-
-    // Bottom right
-    vertices[i++] = leftPaddleCoords.x2;
-    vertices[i++] = leftPaddleCoords.y2;
-
-    // Bottom left
-    vertices[i++] = leftPaddleCoords.x1;
-    vertices[i++] = leftPaddleCoords.y2;
-
-    // Right paddle:
-    // Top left
-    vertices[i++] = rightPaddleCoords.x1;
-    vertices[i++] = rightPaddleCoords.y1;
-
-    // Top right
-    vertices[i++] = rightPaddleCoords.x2;
-    vertices[i++] = rightPaddleCoords.y1;
-
-    // Bottom right
-    vertices[i++] = rightPaddleCoords.x2;
-    vertices[i++] = rightPaddleCoords.y2;
-
-    // Bottom left
-    vertices[i++] = rightPaddleCoords.x1;
-    vertices[i++] = rightPaddleCoords.y2;
-
-    vertices[i++] = ballCoords.x;
-    vertices[i++] = ballCoords.y;
-
-    for (int j = 0; j < triangles; j++)
-    {
-        vertices[i++] = ballCoords.x + (ballCoords.r * cos(j * twoPi / triangles));
-        vertices[i++] = ballCoords.y + (ballCoords.r * sin(j * twoPi / triangles));
-    }
+    leftPaddle.assignVertices(&i, vertices);
+    rightPaddle.assignVertices(&i, vertices);
+    ball.assignVertices(&i, vertices);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);

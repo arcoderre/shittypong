@@ -6,11 +6,13 @@
 class Ball 
 {
     private:
-        float m_radius;
-        float m_hposition;
-        float m_vposition;
-        float m_hvelocity;
-        float m_vvelocity;
+        float m_r;
+        float m_x;
+        float m_y;
+        float m_vx;
+        float m_vy;
+
+        int m_triangleCount;
 
         bool collidesWith(float x_coord, float y_coord);
         void bounceOnPoint(float x_coord, float y_coord);
@@ -18,7 +20,7 @@ class Ball
         void addPaddleVelocity(float paddleVelocity);
 
     public:
-        Ball();
+        Ball(int triangleCount);
 
         void tick();
         void reset();
@@ -34,7 +36,9 @@ class Ball
 
         Ball::Coords getCoords();
 
-        void assignIndices(int * index, unsigned int * indexArray, unsigned int vertexOffset, int triangleCount);
+        void assignIndices(int * index, unsigned int * indexArray, unsigned int vertexOffset);
+
+        void assignVertices(int * index, float * vertexArray);
 };
 
 #endif

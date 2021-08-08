@@ -66,3 +66,22 @@ void Paddle::assignIndices(int * index, unsigned int * indexArray, unsigned int 
     indexArray[(*index)++] = vertexOffset + 3;
 }
 
+void Paddle::assignVertices(int * index, float * vertexArray)
+{
+    // Top left
+    vertexArray[(*index)++] = m_x1;
+    vertexArray[(*index)++] = m_y1;
+
+    // Top right
+    vertexArray[(*index)++] = m_x2;
+    vertexArray[(*index)++] = m_y1;
+
+    // Bottom right
+    vertexArray[(*index)++] = m_x2;
+    vertexArray[(*index)++] = m_y2;
+
+    // Bottom left
+    vertexArray[(*index)++] = m_x1;
+    vertexArray[(*index)++] = m_y2;
+}
+
